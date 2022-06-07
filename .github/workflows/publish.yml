@@ -40,15 +40,14 @@ jobs:
         env:
           CI: true
 
-      - run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - run: cd packages/wrapper
 
-      - run: yarn publish:release ${TAG} --yes
-        if: ${{ env.TAG != '' && !contains(env.TAG, '/') && !contains(env.TAG, '-') }}
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: yarn publish:release ${TAG} --yes --dist-tag next
-        if: ${{ env.TAG != '' && !contains(env.TAG, '/') && contains(env.TAG, '-') }}
+      - id: version
+        run: echo "::set-output name=version::$(echo $(npm view @bridebook/bb-models version))"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
