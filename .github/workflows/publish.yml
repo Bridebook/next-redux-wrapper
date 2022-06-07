@@ -1,24 +1,21 @@
 name: Publish
 
 on:
-  push:
-    branches:
-      - master
-    tags:
-      - '*'
-  pull_request:
+  release:
+    types: [published]
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: '15.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: 12
+          always-auth: true
+          registry-url: https://npm.pkg.github.com/
 
       - id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -47,16 +44,24 @@ jobs:
       - run: yarn publish:release ${TAG} --yes
         if: ${{ env.TAG != '' && !contains(env.TAG, '/') && !contains(env.TAG, '-') }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: yarn publish:release ${TAG} --yes --dist-tag next
         if: ${{ env.TAG != '' && !contains(env.TAG, '/') && contains(env.TAG, '-') }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: coverallsapp/github-action@master
-        if: success()
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: packages/wrapper/coverage/lcov.info
-          base-path: packages/wrapper
+  notify:
+    name: Notify
+    needs: [publish]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rtCamp/action-slack-notify@v2
+        env:
+          MSG_MINIMAL: true
+          SLACK_FOOTER: "${{ needs.publish.outputs.version }}"
+          SLACK_ICON: https://emojis.slackmojis.com/emojis/images/1556810896/5673/octopus_deploy.png?1556810896
+          SLACK_MESSAGE: "Package Published Successfully"
+          SLACK_TITLE: "@bridebook/next-redux-wrapper"
+          SLACK_USERNAME: GitHub
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
