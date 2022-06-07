@@ -51,17 +51,17 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  notify:
-    name: Notify
-    needs: [publish]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: rtCamp/action-slack-notify@v2
-        env:
-          MSG_MINIMAL: true
-          SLACK_FOOTER: "${{ needs.publish.outputs.version }}"
-          SLACK_ICON: https://emojis.slackmojis.com/emojis/images/1556810896/5673/octopus_deploy.png?1556810896
-          SLACK_MESSAGE: "Package Published Successfully"
-          SLACK_TITLE: "@bridebook/next-redux-wrapper"
-          SLACK_USERNAME: GitHub
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+#  notify:
+#    name: Notify
+#    needs: [publish]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: rtCamp/action-slack-notify@v2
+#        env:
+#          MSG_MINIMAL: true
+#          SLACK_FOOTER: "${{ needs.publish.outputs.version }}"
+#          SLACK_ICON: https://emojis.slackmojis.com/emojis/images/1556810896/5673/octopus_deploy.png?1556810896
+#          SLACK_MESSAGE: "Package Published Successfully"
+#          SLACK_TITLE: "@bridebook/next-redux-wrapper"
+#          SLACK_USERNAME: GitHub
+#          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
