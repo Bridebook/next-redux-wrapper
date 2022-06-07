@@ -1,5 +1,5 @@
 {
-  "name": "@bridebook/next-redux-wrapper",
+  "name": "next-redux-wrapper-mono",
   "private": true,
   "version": "8.0.0",
   "description": "Redux wrapper for Next.js",
