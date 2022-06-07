@@ -35,7 +35,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - id: version
-        run: echo "::set-output name=version::$(echo $(npm view @bridebook/bb-models version))"
+        run: echo "::set-output name=version::$(echo $(npm view @bridebook/next-redux-wrapper version))"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
